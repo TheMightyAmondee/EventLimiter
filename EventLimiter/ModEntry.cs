@@ -19,13 +19,22 @@ namespace EventLimiter
         {
             var harmony = new Harmony(this.ModManifest.UniqueID);
 
-            this.config = helper.ReadConfig<ModConfig>();
+            try
+            {
+                this.config = helper.ReadConfig<ModConfig>();
+            }
+            catch (Exception ex)
+            {
+                this.config = new ModConfig();
+                this.Monitor.Log("Error reading config, using default values...", LogLevel.Warn);
+                this.Monitor.Log($"An error occured reading the config. Details:\n{ex}");
+            }
+            
 
             Patches.Hook(harmony, this.Monitor, this.config);
 
             helper.Events.Player.Warped += this.Warped;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
-            helper.ConsoleCommands.Add("get_state", "get events seen and other data tracked by the mod", this.State);
         }
 
         private void Warped (object sender, WarpedEventArgs e)
@@ -42,13 +51,6 @@ namespace EventLimiter
             EventCounterDay.Value = 0;
             EventCounterRow.Value = 0;
             this.Monitor.Log("Resetting event counters");
-        }
-
-        private void State(string command, string[] arg)
-        {
-            var eventsseen = Game1.player.eventsSeen.ToString();
-
-            this.Monitor.Log($"{eventsseen}\n {EventCounterRow.Value}, {EventCounterDay.Value}", LogLevel.Info);
         }
     }
 }

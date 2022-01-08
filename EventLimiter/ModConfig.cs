@@ -8,7 +8,7 @@ namespace EventLimiter
 {
     class ModConfig
     {
-        public int EventsPerDay { get; set; } = 5;
+        public int EventsPerDay { get; set; } = 4;
         public int EventsInARow { get; set; } = 2;
         public int[] Exceptions { get; set; } = { };
     }
