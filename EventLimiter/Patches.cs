@@ -36,6 +36,7 @@ namespace EventLimiter
             {
                 if (evt.id > 0)
                 {
+                    // Check if the event is an exception, skip the rest of the method if so
                     if (config.Exceptions != null && config.Exceptions.Count() > 0)
                     {
                         foreach (var exceptionids in config.Exceptions)
@@ -48,6 +49,7 @@ namespace EventLimiter
                         }
                     }
 
+                    // Check if day limit is reached, skip event if so
                     if (ModEntry.EventCounterDay.Value >= config.EventsPerDay)
                     {
                         monitor.Log("Day limit reached! Skipping event...");
@@ -58,6 +60,7 @@ namespace EventLimiter
                         return;
                     }
 
+                    // Check if row limit is reached, skip event if so
                     else if (ModEntry.EventCounterRow.Value >= config.EventsInARow)
                     {
                         monitor.Log("Continuous event limit reached! Skipping event...");
@@ -78,11 +81,20 @@ namespace EventLimiter
 
         public static void exitEvent_postfix(Event __instance)
         {
-            if (__instance.id > 0)
+            try
             {
-                ModEntry.EventCounterDay.Value++;
-                ModEntry.EventCounterRow.Value++;
+                // Increment counters after a non-hardcoded event is finished
+                if (__instance.id > 0)
+                {
+                    ModEntry.EventCounterDay.Value++;
+                    ModEntry.EventCounterRow.Value++;
+                }
             }
+            catch (Exception ex)
+            {
+                monitor.Log($"Failed in {nameof(exitEvent_postfix)}:\n{ex}", LogLevel.Error);
+            }
+            
         }
     }
 }
