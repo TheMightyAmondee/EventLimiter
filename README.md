@@ -7,10 +7,13 @@ Hardcoded events (weddings) and PlayerKilled events won't be skipped.
 
 Exclusions to which events are affected can also be configured. If there's a cutscene you never want skipped this can be done by listing its id in the Exceptions config option.
 
-The mod does use Harmony, just FYI
+The mod does use Harmony, just FYI.
 
 Installation and use:
 1. Download to mod here
 2. Unzip the download file and place the EventLimiter folder in your Mods folder
 3. Run the game at least once to generate the config
 4. Edit the config as desired and enjoy!
+
+### Versions: ###
+1.0.0 Initial release
