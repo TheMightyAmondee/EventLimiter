@@ -36,14 +36,14 @@ namespace EventLimiter
             Patches.Hook(harmony, this.Monitor, this.config);
 
             // Add event handlers
-            helper.Events.Player.Warped += this.Warped;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
+            helper.Events.Input.ButtonPressed += this.ButtonPressed;
         }
 
-        private void Warped (object sender, WarpedEventArgs e)
+        private void ButtonPressed(object sender, ButtonPressedEventArgs e)
         {
-            // Reset events in a row counter after warping if needed
-            if (EventCounterRow.Value > 0)
+            // Reset events in a row counter if needed, button press used as event because warped event won't consider some events for resetting counters
+            if (EventCounterRow.Value > 0 && Game1.CurrentEvent == null && Context.CanPlayerMove == true)
             {
                 EventCounterRow.Value = 0;
                 this.Monitor.Log("Resetting events in a row counter");
