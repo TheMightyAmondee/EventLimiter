@@ -133,7 +133,7 @@ namespace EventLimiter
             if (configMenu is null)
             {
                 return;
-            }
+            }         
 
             // register mod
             configMenu.Register(
@@ -148,7 +148,7 @@ namespace EventLimiter
                 setValue: value => this.config.EventsPerDay = value,
                 min: 0,
                 tooltip: () => "The maximum number of events shown in a day",
-                name: () => "EventsPerDay");
+                name: () => "Events per day");
 
             configMenu.AddNumberOption(
                 mod: this.ModManifest,
@@ -156,7 +156,26 @@ namespace EventLimiter
                 setValue: value => this.config.EventsInARow = value,
                 min: 0,
                 tooltip: () => "The maximum number of events shown when entering a new location",
-                name: () => "EventsInARow");
+                name: () => "Events in a row");
+
+            configMenu.AddTextOption(
+                mod: this.ModManifest,
+                name: () => "Exceptions",
+                tooltip: () => "Event ids which will never be skipped. Enter only numbers seperated by commas",
+                getValue: () => string.Join(", ", this.config.Exceptions), 
+                setValue: value => this.config.Exceptions = GetExceptionsFromString(value));
+
+
+        }
+
+        private int[] GetExceptionsFromString(string value)
+        {
+            var formattedstring = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+
+            var ints = from field in formattedstring.Where((x) => { int dummy; return Int32.TryParse(x, out dummy); })
+                       select Int32.Parse(field);
+
+            return ints.ToArray();
         }
     }
 }
