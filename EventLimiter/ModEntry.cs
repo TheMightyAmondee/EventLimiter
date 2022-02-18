@@ -109,7 +109,7 @@ namespace EventLimiter
             configMenu.AddTextOption(
                 mod: this.ModManifest,
                 name: () => "Exceptions",
-                tooltip: () => "Event ids which will never be skipped. Enter only numbers seperated by commas",
+                tooltip: () => "Event ids which will never be skipped. Enter only numbers separated by commas",
                 getValue: () => string.Join(", ", this.config.Exceptions), 
                 setValue: value => this.config.Exceptions = GetExceptionsFromString(value));
 
