@@ -84,7 +84,7 @@ namespace EventLimiter
             try
             {
                 // Increment counters after a non-hardcoded event is finished
-                if (__instance.id > 0 && evt.id != 60367 && __instance.isFestival == false)
+                if (__instance.id > 0 && __instance.id != 60367 && __instance.isFestival == false)
                 {
                     ModEntry.EventCounterDay.Value++;
                     ModEntry.EventCounterRow.Value++;
