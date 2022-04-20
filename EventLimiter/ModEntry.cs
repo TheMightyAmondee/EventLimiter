@@ -5,6 +5,7 @@ using StardewModdingAPI.Utilities;
 using StardewModdingAPI.Events;
 using StardewValley;
 using HarmonyLib;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 
@@ -24,6 +25,7 @@ namespace EventLimiter
         : Mod
     {
         private ModConfig config;
+        public List<int> InternalExceptions;
 
         // Counters for event tracking
         public static readonly PerScreen<int> EventCounterDay = new PerScreen<int>();
@@ -45,12 +47,17 @@ namespace EventLimiter
             }
 
             // Add harmony patches
-            Patches.Hook(harmony, this.Monitor, this.config);
+            Patches.Hook(harmony, this.Monitor, this.config, InternalExceptions);
 
             // Add event handlers
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
             helper.Events.GameLoop.DayStarted += this.DayStarted;
             helper.Events.Input.ButtonPressed += this.ButtonPressed;
+        }
+
+        public override object GetApi()
+        {
+            return new ModSupport.EventLimiterApi();
         }
 
         private void ButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -78,7 +85,7 @@ namespace EventLimiter
             if (configMenu is null)
             {
                 return;
-            }         
+            }
 
             // register mod
             configMenu.Register(
@@ -89,8 +96,8 @@ namespace EventLimiter
 
             // Add EventsPerDay option
             configMenu.AddNumberOption(
-                mod: this.ModManifest, 
-                getValue: () => this.config.EventsPerDay, 
+                mod: this.ModManifest,
+                getValue: () => this.config.EventsPerDay,
                 setValue: value => this.config.EventsPerDay = value,
                 min: 0,
                 tooltip: () => "The maximum number of events shown in a day",
@@ -109,8 +116,8 @@ namespace EventLimiter
             configMenu.AddTextOption(
                 mod: this.ModManifest,
                 name: () => "Exceptions",
-                tooltip: () => "Event ids which will never be skipped. Enter only numbers seperated by commas",
-                getValue: () => string.Join(", ", this.config.Exceptions), 
+                tooltip: () => "Event ids which will never be skipped. Enter only numbers separated by commas",
+                getValue: () => string.Join(", ", this.config.Exceptions),
                 setValue: value => this.config.Exceptions = GetExceptionsFromString(value));
 
 

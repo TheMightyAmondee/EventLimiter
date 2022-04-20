@@ -13,18 +13,20 @@ namespace EventLimiter
     {
         private static IMonitor monitor;
         private static ModConfig config;
+        private static List<int> internalexceptions;
 
-        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config)
+        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config, List<int> internalexceptions)
         {
             Patches.monitor = monitor;
             Patches.config = config;
+            Patches.internalexceptions = internalexceptions;
 
             harmony.Patch(
-                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.startEvent)), 
+                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.startEvent)),
                 postfix: new HarmonyMethod(typeof(Patches), nameof(Patches.startEvent_postfix)));
 
             harmony.Patch(
-                original: AccessTools.Method(typeof(Event), nameof(Event.exitEvent)), 
+                original: AccessTools.Method(typeof(Event), nameof(Event.exitEvent)),
                 postfix: new HarmonyMethod(typeof(Patches), nameof(Patches.exitEvent_postfix)));
 
             monitor.Log("Initialised harmony patches...");
@@ -34,16 +36,29 @@ namespace EventLimiter
         {
             try
             {
-                if (evt.id > 0 && evt.isFestival == false)
+                if (evt.id > 0 && evt.id != 60367 && evt.isFestival == false)
                 {
                     // Check if the event is an exception, skip the rest of the method if so
-                    if (config.Exceptions != null && config.Exceptions.Count() > 0)
+                    if ((config.Exceptions != null && config.Exceptions.Count() > 0))
                     {
                         foreach (var exceptionids in config.Exceptions)
                         {
                             if (evt.id.Equals(exceptionids) == true)
                             {
                                 monitor.Log("Made exception for event with id " + evt.id);
+                                return;
+                            }
+                        }
+                    }
+
+                    // Check for mod added exceptions, skip the rest of the method if so
+                    if ((internalexceptions != null && internalexceptions.Count() > 0))
+                    {
+                        foreach (var exceptionids in internalexceptions)
+                        {
+                            if (evt.id.Equals(exceptionids) == true)
+                            {
+                                monitor.Log("Made mod added exception for event with id " + evt.id);
                                 return;
                             }
                         }
@@ -84,7 +99,7 @@ namespace EventLimiter
             try
             {
                 // Increment counters after a non-hardcoded event is finished
-                if (__instance.id > 0 && __instance.isFestival == false)
+                if (__instance.id > 0 && __instance.id != 60367 && __instance.isFestival == false)
                 {
                     ModEntry.EventCounterDay.Value++;
                     ModEntry.EventCounterRow.Value++;
@@ -94,7 +109,7 @@ namespace EventLimiter
             {
                 monitor.Log($"Failed in {nameof(exitEvent_postfix)}:\n{ex}", LogLevel.Error);
             }
-            
+
         }
     }
 }
