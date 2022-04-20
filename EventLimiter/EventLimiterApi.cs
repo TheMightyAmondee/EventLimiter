@@ -6,26 +6,44 @@ using System.Threading.Tasks;
 
 namespace EventLimiter
 {
+    // Api for Event Limiter
     public class EventLimiterApi
     {
-        public static ModConfig config;
-        public static List<int> internalexceptions;
-        public static void GetConfigValues(ModConfig config, List<int> internalexceptions)
+        // Fields and properties to allow api to work, these can't be implemented by mods
+        private static ModConfig config;
+        private static List<int> internalexceptions;
+        internal static void GetConfigValues(ModConfig config, List<int> internalexceptions)
         {
             EventLimiterApi.config = config;
             EventLimiterApi.internalexceptions = internalexceptions;
         }
 
+        // Public api, useable by mods
+
+        /// <summary>
+        /// Get day event limit, max amount of events seen in a day, minus exceptions
+        /// </summary>
+        /// <returns>The day event limit</returns>
         public int GetDayLimit()
         {
             return config.EventsPerDay;
         }
 
+        /// <summary>
+        /// Get in a row event limit, amount of events seen in a row, minus exceptions
+        /// </summary>
+        /// <returns>The max amount of events in a row</returns>
         public int GetRowLimit()
         {
             return config.EventsInARow;
         }
 
+        // Get a list of event exceptions. Internally added events (events not shown in config) can optionally not be returned
+        /// <summary>
+        /// Get a list of event exceptions.
+        /// </summary>
+        /// <param name="includeinternal">Whether internally added events (events not shown in config) are returned</param>
+        /// <returns>A list of events that are exempt from normal event limits</returns>
         public List<int> GetExceptions(bool includeinternal = true)
         {
             List<int> exceptions = new List<int>();
@@ -46,18 +64,23 @@ namespace EventLimiter
             return exceptions;
         }
 
+        /// <summary>
+        /// Add an event exception that will not be reflected in the config, these are identified as mod added exception.
+        /// </summary>
+        /// <param name="eventid">The id of the event to make an exception</param>
+        /// <returns>Whether the exception was successfully added</returns>
         public bool AddInternalException(int eventid)
         {
-            if (eventid < 0)
+            try
+            {
+                internalexceptions.Add(eventid);
+            }
+            catch
             {
                 return false;
             }
 
-            else
-            {
-                internalexceptions.Add(eventid);
-                return true;
-            }
+            return true;
         }
     }
 

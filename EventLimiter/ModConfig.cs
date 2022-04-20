@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EventLimiter
 {
-    public class ModConfig
+    class ModConfig
     {
         public int EventsPerDay { get; set; } = 4;
         public int EventsInARow { get; set; } = 2;

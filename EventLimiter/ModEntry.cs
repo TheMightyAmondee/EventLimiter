@@ -50,7 +50,7 @@ namespace EventLimiter
             // Add harmony patches
             Patches.Hook(harmony, this.Monitor, this.config, this.InternalExceptions);
 
-            //Allow Modsupport access to config
+            // Allow EventLimiterapi access to config
             EventLimiterApi.GetConfigValues(this.config, this.InternalExceptions);
 
             // Add event handlers
@@ -59,6 +59,7 @@ namespace EventLimiter
             helper.Events.Input.ButtonPressed += this.ButtonPressed;
         }
 
+        // Get EventLimiterApi
         public override object GetApi()
         {
             return new EventLimiterApi();
