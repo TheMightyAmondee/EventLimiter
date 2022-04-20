@@ -39,7 +39,7 @@ namespace EventLimiter
                 if (evt.id > 0 && evt.id != 60367 && evt.isFestival == false)
                 {
                     // Check if the event is an exception, skip the rest of the method if so
-                    if ((config.Exceptions != null && config.Exceptions.Count() > 0))
+                    if (config.Exceptions != null && config.Exceptions.Count() > 0)
                     {
                         foreach (var exceptionids in config.Exceptions)
                         {
@@ -52,7 +52,7 @@ namespace EventLimiter
                     }
 
                     // Check for mod added exceptions, skip the rest of the method if so
-                    if ((internalexceptions != null && internalexceptions.Count() > 0))
+                    if (internalexceptions != null && internalexceptions.Count() > 0)
                     {
                         foreach (var exceptionids in internalexceptions)
                         {

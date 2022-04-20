@@ -21,7 +21,7 @@ namespace EventLimiter
         // Public api, useable by mods
 
         /// <summary>
-        /// Get day event limit, max amount of events seen in a day, minus exceptions
+        /// Get day event limit, max amount of events seen in a day, minus exceptions.
         /// </summary>
         /// <returns>The day event limit</returns>
         public int GetDayLimit()
@@ -30,7 +30,7 @@ namespace EventLimiter
         }
 
         /// <summary>
-        /// Get in a row event limit, amount of events seen in a row, minus exceptions
+        /// Get in a row event limit, amount of events seen in a row, minus exceptions.
         /// </summary>
         /// <returns>The max amount of events in a row</returns>
         public int GetRowLimit()
@@ -38,7 +38,6 @@ namespace EventLimiter
             return config.EventsInARow;
         }
 
-        // Get a list of event exceptions. Internally added events (events not shown in config) can optionally not be returned
         /// <summary>
         /// Get a list of event exceptions.
         /// </summary>
@@ -65,7 +64,7 @@ namespace EventLimiter
         }
 
         /// <summary>
-        /// Add an event exception that will not be reflected in the config, these are identified as mod added exception.
+        /// Add an event exception that will not be reflected in the config, these are identified as mod added exceptions.
         /// </summary>
         /// <param name="eventid">The id of the event to make an exception</param>
         /// <returns>Whether the exception was successfully added</returns>
