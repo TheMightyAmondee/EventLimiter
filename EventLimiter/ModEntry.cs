@@ -25,11 +25,12 @@ namespace EventLimiter
         : Mod
     {
         private ModConfig config;
-        public List<int> InternalExceptions;
+        public List<int> InternalExceptions = new List<int>();
 
         // Counters for event tracking
         public static readonly PerScreen<int> EventCounterDay = new PerScreen<int>();
         public static readonly PerScreen<int> EventCounterRow = new PerScreen<int>();
+
         public override void Entry(IModHelper helper)
         {
             var harmony = new Harmony(this.ModManifest.UniqueID);
@@ -47,7 +48,10 @@ namespace EventLimiter
             }
 
             // Add harmony patches
-            Patches.Hook(harmony, this.Monitor, this.config, InternalExceptions);
+            Patches.Hook(harmony, this.Monitor, this.config, this.InternalExceptions);
+
+            //Allow Modsupport access to config
+            EventLimiterApi.GetConfigValues(this.config, this.InternalExceptions);
 
             // Add event handlers
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
@@ -57,7 +61,7 @@ namespace EventLimiter
 
         public override object GetApi()
         {
-            return new ModSupport.EventLimiterApi();
+            return new EventLimiterApi();
         }
 
         private void ButtonPressed(object sender, ButtonPressedEventArgs e)
