@@ -17,7 +17,35 @@ Installation and use:
 3. Run the game at least once to generate the config
 4. Edit the config as desired and enjoy!
 
+## Using the api ##
+
+Version 1.2.0 added an api to allow SMAPI mods to access config data or add event exceptions.
+
+To use the api:
+1. Copy the public methods (all methods beyond the public api comment) you need access to from the EventLimiterApi class into a public interface named IEventLimiterApi in your code.
+
+It should look something like this:
+```
+{
+  public interface IEventLimiterApi
+  {
+    public int GetDayLimit();
+    
+    public int GetRowLimit();
+    
+    public List<int> GetExceptions(bool includeinternal = true);
+    
+    public bool AddInternalException(int eventid);
+  }
+}
+```
+2. In the GameLaunched event, call the API.
+
+To prevent errors, when using the api ensure that the returned api is not null whenever using its methods. This ensures that Event Limiter is not needed as a dependency.
+
 ### Versions: ###
 1.0.0 Initial release
 
 1.1.0 Added Generic Mod Config Menu support
+
+1.2.0 Added Event Limiter api
