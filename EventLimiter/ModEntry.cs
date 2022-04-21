@@ -21,6 +21,12 @@ namespace EventLimiter
         void AddNumberOption(IManifest mod, Func<int> getValue, Action<int> setValue, Func<string> name, Func<string> tooltip = null, int? min = null, int? max = null, int? interval = null, Func<int, string> formatValue = null, string fieldId = null);
     }
 
+    // Data model for CP integration
+    class InternalExceptionModel
+    {
+        public List<int> EventLimiterExceptions;
+    }
+
     public class ModEntry
         : Mod
     {
@@ -52,6 +58,46 @@ namespace EventLimiter
 
             // Allow EventLimiterapi access to config
             EventLimiterApi.GetConfigValues(this.config, this.InternalExceptions);
+
+            // Add Content Patcher integration
+            IList<InternalExceptionModel> eventexceptionmodels = new List<InternalExceptionModel>();
+
+            foreach (IModInfo mod in this.Helper.ModRegistry.GetAll())
+            {
+                // Check if it's a Content Patcher pack
+                if (mod.IsContentPack == false || mod.Manifest.ContentPackFor?.UniqueID.Trim().Equals("Pathoschild.ContentPatcher", StringComparison.InvariantCultureIgnoreCase) == false)
+                {
+                    continue;
+                }                    
+
+                string directoryPath = (string)mod.GetType().GetProperty("DirectoryPath")?.GetValue(mod);
+
+                if (directoryPath == null)
+                {
+                    throw new InvalidOperationException($"Couldn't get DirectoryPath property from the mod info for {mod.Manifest.Name}.");
+                }
+                    
+                // read JSON file
+                IContentPack contentPack = this.Helper.ContentPacks.CreateFake(directoryPath);
+                eventexceptionmodels.Add(contentPack.ReadJsonFile<InternalExceptionModel>("content.json"));
+
+                // Get event IDs and add to internal exceptions
+                foreach (InternalExceptionModel model in eventexceptionmodels)
+                {
+                    if (model?.EventLimiterExceptions == null)
+                    {
+                        continue;
+                    }
+                        
+                    foreach (int eventid in model.EventLimiterExceptions)
+                    {
+                        this.InternalExceptions.Add(eventid);
+                        this.Monitor.Log($"Content pack {mod.Manifest.Name} added event {eventid} as event limit exception");
+                    }                        
+
+                }
+
+            }
 
             // Add event handlers
             helper.Events.GameLoop.GameLaunched += this.GameLaunched;
