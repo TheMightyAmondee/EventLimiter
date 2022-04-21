@@ -12,7 +12,7 @@ namespace EventLimiter
         // Fields and properties to allow api to work, these can't be implemented by mods
         private static ModConfig config;
         private static List<int> internalexceptions;
-        internal static void GetConfigValues(ModConfig config, List<int> internalexceptions)
+        internal static void Hook(ModConfig config, List<int> internalexceptions)
         {
             EventLimiterApi.config = config;
             EventLimiterApi.internalexceptions = internalexceptions;

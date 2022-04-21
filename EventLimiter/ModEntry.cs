@@ -56,11 +56,8 @@ namespace EventLimiter
             // Add harmony patches
             Patches.Hook(harmony, this.Monitor, this.config, this.InternalExceptions);
 
-            // Allow EventLimiterapi access to config
-            EventLimiterApi.GetConfigValues(this.config, this.InternalExceptions);
-
-            // Add Content Patcher integration
-            IList<InternalExceptionModel> eventexceptionmodels = new List<InternalExceptionModel>();
+            // Allow EventLimiterapi access to needed values
+            EventLimiterApi.Hook(this.config, this.InternalExceptions);           
 
             foreach (IModInfo mod in this.Helper.ModRegistry.GetAll())
             {
@@ -70,33 +67,28 @@ namespace EventLimiter
                     continue;
                 }                    
 
+                // Use reflection on IModInfo to get non-public property
                 string directoryPath = (string)mod.GetType().GetProperty("DirectoryPath")?.GetValue(mod);
 
                 if (directoryPath == null)
                 {
                     throw new InvalidOperationException($"Couldn't get DirectoryPath property from the mod info for {mod.Manifest.Name}.");
                 }
-                    
-                // read JSON file
-                IContentPack contentPack = this.Helper.ContentPacks.CreateFake(directoryPath);
-                eventexceptionmodels.Add(contentPack.ReadJsonFile<InternalExceptionModel>("content.json"));
 
-                // Get event IDs and add to internal exceptions
-                foreach (InternalExceptionModel model in eventexceptionmodels)
+
+                // read JSON file into data model
+                IContentPack contentPack = this.Helper.ContentPacks.CreateFake(directoryPath);
+                InternalExceptionModel model = contentPack.ReadJsonFile<InternalExceptionModel>("content.json");
+
+                // Get event IDs from model and add to internal exceptions
+                if (model?.EventLimiterExceptions != null)
                 {
-                    if (model?.EventLimiterExceptions == null)
-                    {
-                        continue;
-                    }
-                        
                     foreach (int eventid in model.EventLimiterExceptions)
                     {
                         this.InternalExceptions.Add(eventid);
                         this.Monitor.Log($"Content pack {mod.Manifest.Name} added event {eventid} as event limit exception");
-                    }                        
-
-                }
-
+                    }
+                }               
             }
 
             // Add event handlers
