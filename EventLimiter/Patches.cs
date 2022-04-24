@@ -13,18 +13,20 @@ namespace EventLimiter
     {
         private static IMonitor monitor;
         private static ModConfig config;
+        private static List<int> internalexceptions;
 
-        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config)
+        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config, List<int> internalexceptions)
         {
             Patches.monitor = monitor;
             Patches.config = config;
+            Patches.internalexceptions = internalexceptions;
 
             harmony.Patch(
-                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.startEvent)), 
+                original: AccessTools.Method(typeof(GameLocation), nameof(GameLocation.startEvent)),
                 postfix: new HarmonyMethod(typeof(Patches), nameof(Patches.startEvent_postfix)));
 
             harmony.Patch(
-                original: AccessTools.Method(typeof(Event), nameof(Event.exitEvent)), 
+                original: AccessTools.Method(typeof(Event), nameof(Event.exitEvent)),
                 postfix: new HarmonyMethod(typeof(Patches), nameof(Patches.exitEvent_postfix)));
 
             monitor.Log("Initialised harmony patches...");
@@ -44,6 +46,19 @@ namespace EventLimiter
                             if (evt.id.Equals(exceptionids) == true)
                             {
                                 monitor.Log("Made exception for event with id " + evt.id);
+                                return;
+                            }
+                        }
+                    }
+
+                    // Check for mod added exceptions, skip the rest of the method if so
+                    if (internalexceptions != null && internalexceptions.Count() > 0)
+                    {
+                        foreach (var exceptionids in internalexceptions)
+                        {
+                            if (evt.id.Equals(exceptionids) == true)
+                            {
+                                monitor.Log("Made mod added exception for event with id " + evt.id);
                                 return;
                             }
                         }
@@ -94,7 +109,7 @@ namespace EventLimiter
             {
                 monitor.Log($"Failed in {nameof(exitEvent_postfix)}:\n{ex}", LogLevel.Error);
             }
-            
+
         }
     }
 }
