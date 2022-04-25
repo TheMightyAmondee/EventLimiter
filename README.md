@@ -28,7 +28,7 @@ The content pack should look something like this:
 {
   "Format":"[format number here]",
   "Changes":["[any conent pack changes here]"],
-  "EventLimitExceptions":[1,2,3]
+  "EventLimiterExceptions":[1,2,3]
 }
 ```
 
