@@ -160,7 +160,7 @@ namespace EventLimiter
             // Add ExemptEventsCountTowardsLimit option
             configMenu.AddBoolOption(
                mod: this.ModManifest,
-               name: () => "Exemptions count towards limit",
+               name: () => "Exceptions count towards limit",
                tooltip: () => "Event exceptions will count towards event limits",
                getValue: () => this.config.ExemptEventsCountTowardsLimit,
                setValue: value => this.config.ExemptEventsCountTowardsLimit = value);
