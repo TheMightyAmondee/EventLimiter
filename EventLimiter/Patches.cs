@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using StardewModdingAPI;
 using StardewValley;
 using HarmonyLib;
@@ -98,6 +96,18 @@ namespace EventLimiter
         {
             try
             {
+                // Exit method if counters shouldn't increment (event exception not counting towards limit)
+                if (config.ExemptEventsCountTowardsLimit == false 
+                    && (
+                        (config.Exceptions != null && config.Exceptions.Contains(__instance.id) == true) 
+                        || 
+                        (internalexceptions != null && internalexceptions.Contains(__instance.id) == true)
+                       )
+                   )
+                {
+                    return;
+                }
+
                 // Increment counters after a non-hardcoded event is finished
                 if (__instance.id > 0 && __instance.id != 60367 && __instance.isFestival == false)
                 {

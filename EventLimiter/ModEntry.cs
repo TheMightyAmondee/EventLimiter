@@ -19,6 +19,8 @@ namespace EventLimiter
         void AddTextOption(IManifest mod, Func<string> getValue, Action<string> setValue, Func<string> name, Func<string> tooltip = null, string[] allowedValues = null, Func<string, string> formatAllowedValue = null, string fieldId = null);
 
         void AddNumberOption(IManifest mod, Func<int> getValue, Action<int> setValue, Func<string> name, Func<string> tooltip = null, int? min = null, int? max = null, int? interval = null, Func<int, string> formatValue = null, string fieldId = null);
+
+        void AddBoolOption(IManifest mod, Func<bool> getValue, Action<bool> setValue, Func<string> name, Func<string> tooltip = null, string fieldId = null);
     }
 
     // Data model for CP integration
@@ -155,6 +157,14 @@ namespace EventLimiter
                 tooltip: () => "The maximum number of events shown when entering a new location",
                 name: () => "Events in a row");
 
+            // Add ExemptEventsCountTowardsLimit option
+            configMenu.AddBoolOption(
+               mod: this.ModManifest,
+               name: () => "Exemptions count towards limit",
+               tooltip: () => "Event exceptions will count towards event limits",
+               getValue: () => this.config.ExemptEventsCountTowardsLimit,
+               setValue: value => this.config.ExemptEventsCountTowardsLimit = value);
+
             // Add Exceptions option
             configMenu.AddTextOption(
                 mod: this.ModManifest,
@@ -162,7 +172,6 @@ namespace EventLimiter
                 tooltip: () => "Event ids which will never be skipped. Enter only numbers separated by commas",
                 getValue: () => string.Join(", ", this.config.Exceptions),
                 setValue: value => this.config.Exceptions = GetExceptionsFromString(value));
-
 
         }
 
