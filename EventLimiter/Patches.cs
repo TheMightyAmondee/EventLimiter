@@ -37,29 +37,17 @@ namespace EventLimiter
                 if (evt.id > 0 && evt.id != 60367 && evt.isFestival == false)
                 {
                     // Check if the event is an exception, skip the rest of the method if so
-                    if (config.Exceptions != null && config.Exceptions.Count() > 0)
+                    if (config.Exceptions != null && config.Exceptions.Contains(evt.id) == true)
                     {
-                        foreach (var exceptionids in config.Exceptions)
-                        {
-                            if (evt.id.Equals(exceptionids) == true)
-                            {
-                                monitor.Log("Made exception for event with id " + evt.id);
-                                return;
-                            }
-                        }
+                        monitor.Log("Made exception for event with id " + evt.id);
+                        return;
                     }
 
                     // Check for mod added exceptions, skip the rest of the method if so
-                    if (internalexceptions != null && internalexceptions.Count() > 0)
+                    if (internalexceptions != null && internalexceptions.Contains(evt.id) == true)
                     {
-                        foreach (var exceptionids in internalexceptions)
-                        {
-                            if (evt.id.Equals(exceptionids) == true)
-                            {
-                                monitor.Log("Made mod added exception for event with id " + evt.id);
-                                return;
-                            }
-                        }
+                        monitor.Log("Made mod added exception for event with id " + evt.id);
+                        return;
                     }
 
                     // Check if day limit is reached, skip event if so
