@@ -11,9 +11,9 @@ namespace EventLimiter
     {
         private static IMonitor monitor;
         private static ModConfig config;
-        private static List<int> internalexceptions;
+        private static List<string> internalexceptions;
 
-        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config, List<int> internalexceptions)
+        public static void Hook(Harmony harmony, IMonitor monitor, ModConfig config, List<string> internalexceptions)
         {
             Patches.monitor = monitor;
             Patches.config = config;
@@ -30,11 +30,17 @@ namespace EventLimiter
             monitor.Log("Initialised harmony patches...");
         }
 
+        private string GetTrimmedId(string id)
+        {
+            var idparts = id.Split("/");
+            return idparts[0];
+        }
+
         public static void startEvent_postfix(GameLocation __instance, Event evt)
         {
             try
             {
-                if (evt.id > 0 && evt.id != 60367 && evt.isFestival == false)
+                if (evt.id != "PlayerKilled" && GetTrimmedId(evt.id) != "60367" && evt.isFestival == false)
                 {
                     // Check if the event is an exception, skip the rest of the method if so
                     if (config.Exceptions != null && config.Exceptions.Contains(evt.id) == true)

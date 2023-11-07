@@ -171,18 +171,20 @@ namespace EventLimiter
                 name: () => "Exceptions",
                 tooltip: () => "Event ids which will never be skipped. Enter only numbers separated by commas",
                 getValue: () => string.Join(", ", this.config.Exceptions), 
-                setValue: value => this.config.Exceptions = GetExceptionsFromString(value));
+                setValue: value => this.config.Exceptions = value
+                //GetExceptionsFromString(value)
+                );
 
         }
 
-        private int[] GetExceptionsFromString(string value)
-        {
-            var formattedstring = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
+        //private int[] GetExceptionsFromString(string value)
+        //{
+        //    var formattedstring = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray();
 
-            var ints = from field in formattedstring.Where((x) => { int y; return Int32.TryParse(x, out y); })
-                       select Int32.Parse(field);
+        //    var ints = from field in formattedstring.Where((x) => { int y; return Int32.TryParse(x, out y); })
+        //               select Int32.Parse(field);
 
-            return ints.ToArray();
-        }
+        //    return ints.ToArray();
+        //}
     }
 }
