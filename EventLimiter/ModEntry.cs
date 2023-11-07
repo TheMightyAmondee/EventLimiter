@@ -26,14 +26,14 @@ namespace EventLimiter
     // Data model for CP integration
     class InternalExceptionModel
     {
-        public List<int> EventLimiterExceptions;
+        public List<string> EventLimiterExceptions;
     }
 
     public class ModEntry
         : Mod
     {
         private ModConfig config;
-        public List<int> InternalExceptions = new List<int>();
+        public List<string> InternalExceptions = new List<string>();
 
         // Counters for event tracking
         public static readonly PerScreen<int> EventCounterDay = new PerScreen<int>();
@@ -85,7 +85,7 @@ namespace EventLimiter
                 // Get event IDs from model and add to internal exceptions
                 if (model?.EventLimiterExceptions != null)
                 {
-                    foreach (int eventid in model.EventLimiterExceptions)
+                    foreach (string eventid in model.EventLimiterExceptions)
                     {
                         this.InternalExceptions.Add(eventid);
                         this.Monitor.Log($"Content pack {mod.Manifest.Name} added event {eventid} as event limit exception");
@@ -170,8 +170,8 @@ namespace EventLimiter
                 mod: this.ModManifest,
                 name: () => "Exceptions",
                 tooltip: () => "Event ids which will never be skipped. Enter only numbers separated by commas",
-                getValue: () => string.Join(", ", this.config.Exceptions), 
-                setValue: value => this.config.Exceptions = value
+                getValue: () => string.Join(", ", this.config.Exceptions),
+                setValue: value => this.config.Exceptions = value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim()).ToArray()
                 //GetExceptionsFromString(value)
                 );
 
