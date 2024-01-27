@@ -55,9 +55,9 @@ namespace EventLimiter
                 }
             }
 
-            foreach (string exception in config.Exceptions)
+            foreach (var exception in config.Exceptions)
             {
-                exceptions.Add(exception);
+                exceptions.Add(exception.ToString());
             }
 
             return exceptions;
