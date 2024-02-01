@@ -36,7 +36,7 @@ namespace EventLimiter
         public List<string> InternalExceptions = new List<string>(); 
         public List<string> NormalisedEventids = new List<string>();
         // Important story events: intro, introduce special orders board, complete cc, complete joja, complete missing bundle, playerkilled, wedding
-        public static readonly string[] StoryProgressionEvents = new string[7] { "60367", "15389722", "191393", "502261", "missingBundleComplete", "PlayerKilled", "-2" };
+        public static readonly string[] StoryProgressionEvents = new string[8] { "60367", "15389722", "191393", "502261", "missingBundleComplete", "PlayerKilled", "-2", "-1" };
 
         // Counters for event tracking
         public static readonly PerScreen<int> EventCounterDay = new PerScreen<int>();
@@ -52,9 +52,9 @@ namespace EventLimiter
                 this.config = helper.ReadConfig<ModConfig>();
                 foreach(var exception in this.config.Exceptions)
                 {
-                    if (exception is int)
+                    if (exception is long)
                     {
-                        this.Monitor.Log("Looks like exceptions exist in the config using an old data type. This will break in a future version of Event Limiter.\nPlease ensure all exception entries are enclosed in quotation marks to ensure future compatibility", LogLevel.Warn);
+                        this.Monitor.Log("Looks like exceptions exist in the config using an old data type. This will break in a future version of Event Limiter.\nPlease ensure all exception entries are enclosed in double quotation marks to ensure future compatibility", LogLevel.Warn);
                         break;
                     }
                 }
