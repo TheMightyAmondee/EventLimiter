@@ -36,7 +36,7 @@ namespace EventLimiter
         public List<string> InternalExceptions = new List<string>(); 
         public List<string> NormalisedEventids = new List<string>();
         // Important story events: intro, introduce special orders board, complete cc, complete joja, complete missing bundle, playerkilled, wedding
-        public static readonly string[] StoryProgressionEvents = new string[8] { "60367", "15389722", "191393", "502261", "missingBundleComplete", "PlayerKilled", "-2", "-1" };
+        public static readonly string[] StoryProgressionEvents = new string[9] { "60367", "15389722", "191393", "502261", "missingBundleComplete", "PlayerKilled", "-2", "-1", "MovieTheaterScreening" };
 
         // Counters for event tracking
         public static readonly PerScreen<int> EventCounterDay = new PerScreen<int>();
