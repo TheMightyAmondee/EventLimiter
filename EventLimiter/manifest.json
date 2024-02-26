@@ -5,6 +5,6 @@
   "Description": "Limit events per day or in a row!",
   "UniqueID": "TheMightyAmondee.EventLimiter",
   "EntryDll": "EventLimiter.dll",
-  "MinimumApiVersion": "3.13.0",
+  "MinimumApiVersion": "4.0.0-alpha",
   "UpdateKeys": [ "Nexus:10735" ]
 }
