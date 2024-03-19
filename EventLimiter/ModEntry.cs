@@ -54,7 +54,7 @@ namespace EventLimiter
                 {
                     if (exception is long)
                     {
-                        this.Monitor.Log("Looks like exceptions exist in the config using an old data type. This will break in a future version of Event Limiter.\nPlease ensure all exception entries are enclosed in double quotation marks to ensure future compatibility", LogLevel.Warn);
+                        this.Monitor.Log("Looks like exceptions exist in the config using an old data type. This will break in a future version of Event Limiter.\nPlease ensure all exception entries are enclosed in double quotation marks for future compatibility", LogLevel.Warn);
                         break;
                     }
                 }
@@ -101,6 +101,10 @@ namespace EventLimiter
                 {
                     foreach (object eventid in model.EventLimiterExceptions)
                     {
+                        if (eventid is long)
+                        {
+                            this.Monitor.LogOnce($"{mod.Manifest.Name} added an event exception using the old data format. This will break in a future version of Event Limiter.\nPlease inform the author of this issue.", LogLevel.Warn);
+                        }
                         this.InternalExceptions.Add(eventid.ToString());
                         this.Monitor.Log($"Content pack {mod.Manifest.Name} added event {eventid} as event limit exception");
                     }
