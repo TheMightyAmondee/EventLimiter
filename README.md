@@ -50,7 +50,7 @@ It should look something like this:
     
     public int GetRowLimit();
     
-    public List<int> GetExceptions(bool includeinternal = true);
+    public List<string> GetExceptions(bool includeinternal = true);
     
     public bool AddInternalException(int eventid);
   }
